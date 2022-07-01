@@ -9,6 +9,11 @@ import scheduler
 
 
 def download_who_table() -> pd.DataFrame:
+    """Downloads table on COVID-19 data from WHO.
+
+    Returns:
+        pd.DataFrame: WHO's COVID-19 data with renamed columns
+    """
     response = requests.get(
         "https://covid19.who.int/WHO-COVID-19-global-table-data.csv",
     )
@@ -19,6 +24,7 @@ def download_who_table() -> pd.DataFrame:
 
 
 def job() -> None:
+    """Downloads COVID-19 table from WHO and saves it."""
     df = download_who_table()
     df.to_csv(
         f"scraped/who_table_{date.today().strftime('%Y-%m-%d_23-00')}.csv",
@@ -27,8 +33,7 @@ def job() -> None:
 
 
 if __name__ == "__main__":
-    schedule.every().day.at("23:00").do(job)
-
+    scheduler.every().day.at("23:00").do(job)
     while True:
-        schedule.run_pending()
+        scheduler.run_pending()
         time.sleep(1)
